@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ModalLayout from './modal-layout';
 import ButtonActionPlus from '@/components/ui/button-action-plus';
 
@@ -56,6 +56,23 @@ export default function EditAboutModal({ isOpen, onClose, onSave, initialData }:
   };
 
   const [formData, setFormData] = useState<AboutData>(getInitialFormData());
+
+  // Update form data when modal opens or initialData changes
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setFormData({
+        ultraThinTitle: initialData.ultraThinTitle || '',
+        ultraThinDescription: initialData.ultraThinDescription || '',
+        ultraThinContent: initialData.ultraThinContent || '',
+        thinTitle: initialData.thinTitle || '',
+        thinDescription: initialData.thinDescription || '',
+        thinContent: initialData.thinContent || '',
+        regularTitle: initialData.regularTitle || '',
+        regularDescription: initialData.regularDescription || '',
+        regularContent: initialData.regularContent || '',
+      });
+    }
+  }, [isOpen, initialData]);
 
   const handleInputChange = (field: keyof AboutData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

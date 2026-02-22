@@ -38,46 +38,24 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { 
-      ultraThinTitle,
-      ultraThinDescription,
-      ultraThinContent,
-      thinTitle,
-      thinDescription,
-      thinContent,
-      regularTitle,
-      regularDescription,
-      regularContent,
-    } = body;
+    const { updates } = body;
 
-    // Update all three cards
-    const updates = [
-      {
-        card_type: 'ultra_thin',
-        title: ultraThinTitle,
-        description: ultraThinDescription,
-        content: ultraThinContent,
-      },
-      {
-        card_type: 'thin',
-        title: thinTitle,
-        description: thinDescription,
-        content: thinContent,
-      },
-      {
-        card_type: 'regular',
-        title: regularTitle,
-        description: regularDescription,
-        content: regularContent,
-      },
-    ];
+    if (!updates || !Array.isArray(updates)) {
+      return NextResponse.json(
+        { error: 'Invalid updates format' },
+        { status: 400 }
+      );
+    }
 
-    const promises = updates.map(async (update) => {
+    // Update all cards based on updates array
+    const promises = updates.map(async (update: any) => {
       const { error } = await supabaseAdmin
         .from('about_contents')
         // @ts-expect-error - Supabase type issue with update
         .update({
-          ...update,
+          title: update.title,
+          description: update.description,
+          content: update.content,
           updated_by: adminSession.value,
         } as any)
         .eq('card_type', update.card_type)

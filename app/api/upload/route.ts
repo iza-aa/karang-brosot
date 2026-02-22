@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Supabase Storage
     const { data, error } = await supabaseAdmin.storage
-      .from('images') // bucket name: 'images'
+      .from('photos') // bucket name: 'photos'
       .upload(filePath, buffer, {
         contentType: file.type,
         cacheControl: '3600',
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Get public URL
     const { data: publicUrlData } = supabaseAdmin.storage
-      .from('images')
+      .from('photos')
       .getPublicUrl(filePath);
 
     return NextResponse.json({
@@ -104,7 +104,7 @@ export async function DELETE(request: NextRequest) {
 
     // Delete from Supabase Storage
     const { error } = await supabaseAdmin.storage
-      .from('images')
+      .from('photos')
       .remove([path]);
 
     if (error) {

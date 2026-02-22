@@ -25,10 +25,10 @@ export default function Footer() {
             <div className="flex items-start gap-3">
               <div className="w-16 h-16 relative flex-shrink-0 flex items-center justify-center">
                 <Image
-                  src="/kpg-logo.png"
+                  src="/taruna-logo.png"
                   alt="Logo Karang Brosot"
-                  width={36}
-                  height={36}
+                  width={50}
+                  height={50}
                   className="object-contain mb-2"
                 />
               </div>
@@ -43,9 +43,8 @@ export default function Footer() {
             </div>
 
             <div className="text-[var(--color-blue-uii)]/80 dark:text-white/80 text-sm space-y-2">
-              <p>Kantor Pedukuhan Karang Brosot</p>
-              <p>Jl. xxx No. xxx</p>
-              <p>Kecamatan xxx, Kabupaten xxx, Provinsi xxx</p>
+              <p>Pedukuhan Karang Brosot</p>
+              <p>Karang, Brosot, Kec. Galur, Kabupaten Kulon Progo, Daerah Istimewa Yogyakarta 55661</p>
             </div>
 
             {/* Contact Info */}
@@ -114,7 +113,7 @@ export default function Footer() {
                   </div>
                   <div className="flex-1">
                     <p className="text-[var(--color-blue-uii)] dark:text-white font-semibold">Instagram</p>
-                    <p className="text-[var(--color-blue-uii)]/70 dark:text-white/70 text-sm">@xxx</p>
+                    <p className="text-[var(--color-blue-uii)]/70 dark:text-white/70 text-sm">@tarunabhakti_karang</p>
                   </div>
                 </div>
               </a>
@@ -133,7 +132,7 @@ export default function Footer() {
                   </div>
                   <div className="flex-1">
                     <p className="text-[var(--color-blue-uii)] dark:text-white font-semibold">TikTok</p>
-                    <p className="text-[var(--color-blue-uii)]/70 dark:text-white/70 text-sm">@xxx</p>
+                    <p className="text-[var(--color-blue-uii)]/70 dark:text-white/70 text-sm">@taruna.bhakti9karang</p>
                   </div>
                 </div>
               </a>

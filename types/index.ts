@@ -28,6 +28,9 @@ export interface OrgMember {
   created_at: string;
   updated_at: string;
   children?: OrgMember[];
+  custom_x?: number | null;
+  custom_y?: number | null;
+  use_custom_layout?: boolean;
 }
 
 export interface OrgMemberWithStructure extends OrgMember {
@@ -36,6 +39,18 @@ export interface OrgMemberWithStructure extends OrgMember {
 
 export interface OrgTreeNode extends OrgMember {
   children: OrgTreeNode[];
+}
+
+export interface OrgConnection {
+  id: string;
+  structure_id: string;
+  from_member_id: string;
+  to_member_id: string;
+  connection_type: 'solid' | 'dashed' | 'dotted';
+  color: string;
+  waypoints?: { x: number; y: number }[];
+  created_at: string;
+  updated_at: string;
 }
 
 // Form types

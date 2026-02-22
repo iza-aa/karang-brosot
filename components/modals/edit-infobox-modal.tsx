@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ModalLayout from './modal-layout';
 import ButtonActionPlus from '@/components/ui/button-action-plus';
 
@@ -50,6 +50,22 @@ export default function EditInfoboxModal({ isOpen, onClose, onSave, initialData 
   };
 
   const [formData, setFormData] = useState<InfoboxData>(getInitialFormData());
+
+  // Update form data when modal opens or initialData changes
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setFormData({
+        luasWilayah: initialData.luasWilayah || '',
+        kartuKeluarga: initialData.kartuKeluarga || '',
+        totalPenduduk: initialData.totalPenduduk || '',
+        rtRw: initialData.rtRw || '',
+        fasilitasUmum: initialData.fasilitasUmum || '',
+        fasilitasUmumDetail: initialData.fasilitasUmumDetail || '',
+        organisasiAktif: initialData.organisasiAktif || '',
+        organisasiAktifDetail: initialData.organisasiAktifDetail || '',
+      });
+    }
+  }, [isOpen, initialData]);
 
   const handleInputChange = (field: keyof InfoboxData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));

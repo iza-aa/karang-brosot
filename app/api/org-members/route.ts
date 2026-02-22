@@ -65,6 +65,8 @@ export async function POST(request: NextRequest) {
       description,
       phone,
       email,
+      manual_level,
+      order,
     } = body;
 
     if (!structure_id || !name || !position || !role) {
@@ -74,9 +76,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Calculate level based on parent
+    // Calculate level based on manual_level or parent
     let level = 0;
-    if (parent_id) {
+    if (manual_level !== undefined && manual_level !== null) {
+      // Use manual level if provided
+      level = manual_level;
+    } else if (parent_id) {
+      // Auto-calculate from parent
       const admin = supabaseAdmin as any;
       const { data: parentDataRaw } = await admin
         .from('org_members')
@@ -88,20 +94,24 @@ export async function POST(request: NextRequest) {
       level = (parentData?.level || 0) + 1;
     }
 
-    // Get max order for this level
+    // Use provided order or calculate new order for this level
+    let finalOrder = order;
+    if (!finalOrder) {
+      const admin = supabaseAdmin as any;
+      const { data: maxOrderDataRaw } = await admin
+        .from('org_members')
+        .select('order')
+        .eq('structure_id', structure_id)
+        .eq('level', level)
+        .order('order', { ascending: false })
+        .limit(1)
+        .single();
+
+      const maxOrderData = maxOrderDataRaw as unknown as { order: number | null } | null;
+      finalOrder = (maxOrderData?.order || 0) + 1;
+    }
+
     const admin = supabaseAdmin as any;
-    const { data: maxOrderDataRaw } = await admin
-      .from('org_members')
-      .select('order')
-      .eq('structure_id', structure_id)
-      .eq('level', level)
-      .order('order', { ascending: false })
-      .limit(1)
-      .single();
-
-    const maxOrderData = maxOrderDataRaw as unknown as { order: number | null } | null;
-    const newOrder = (maxOrderData?.order || 0) + 1;
-
     const { data, error } = await admin
       .from('org_members')
       .insert({
@@ -111,7 +121,8 @@ export async function POST(request: NextRequest) {
         position,
         role,
         level,
-        order: newOrder,
+        order: finalOrder,
+        manual_level: manual_level !== undefined && manual_level !== null ? manual_level : null,
         photo_url: photo_url || null,
         description,
         phone,

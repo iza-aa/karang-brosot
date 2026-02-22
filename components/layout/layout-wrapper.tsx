@@ -9,7 +9,10 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   
   // Halaman yang tidak menampilkan Header dan Footer
-  const hideLayout = pathname === '/login' || pathname.startsWith('/admin/login');
+  const hideLayout = pathname === '/login' || 
+                     pathname.startsWith('/admin/login') ||
+                     pathname.startsWith('/kelembagaan/customize') ||
+                     pathname.startsWith('/berita/');
 
   // Halaman yang tetap pakai Header tapi tanpa Footer
   const hideFooter = pathname === '/kelembagaan';

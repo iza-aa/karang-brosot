@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { FloatingTabsBar } from '@/components/ui/tabs';
 import LoadingSpinner from '@/components/ui/loading-spinner';
 import ConfirmationDialog from '@/components/ui/confirmation-dialog';
 import { useToast } from '@/components/ui/toast';
-import OrgChartD3 from '@/components/modules/kelembagaan/org-chart-d3';
+import CustomOrgChartViewer from '@/components/modules/kelembagaan/custom-org-chart-viewer';
+
 import AddStructureModal from '@/components/modules/kelembagaan/add-structure-modal';
 import AddMemberModal from '@/components/modules/kelembagaan/add-member-modal';
 import EditMemberModal from '@/components/modules/kelembagaan/edit-member-modal';
@@ -16,6 +18,7 @@ import { supabase } from '@/lib/supabase';
 export default function KelembagaanPage() {
   const { isAdmin } = useAdmin();
   const toast = useToast();
+  const router = useRouter();
 
   // Disable page scroll while on this page
   useEffect(() => {
@@ -77,10 +80,38 @@ export default function KelembagaanPage() {
       const response = await fetch('/api/org-structures');
       if (!response.ok) throw new Error('Failed to fetch structures');
       const data = await response.json();
-      setStructures(data);
       
-      if (data.length > 0 && !activeTab) {
-        setActiveTab(data[0].id);
+      // Jika bukan admin, filter hanya struktur yang sudah punya members
+      if (!isAdmin && data.length > 0) {
+        // Check each structure for members
+        const structuresWithMembers = await Promise.all(
+          data.map(async (structure: OrgStructure) => {
+            try {
+              const membersResponse = await fetch(`/api/org-members?structure_id=${structure.id}`);
+              if (!membersResponse.ok) return null;
+              const members = await membersResponse.json();
+              // Hanya return structure jika ada members
+              return members && members.length > 0 ? structure : null;
+            } catch {
+              return null;
+            }
+          })
+        );
+        
+        // Filter out null values (structures without members)
+        const filteredStructures = structuresWithMembers.filter((s): s is OrgStructure => s !== null);
+        setStructures(filteredStructures);
+        
+        if (filteredStructures.length > 0 && !activeTab) {
+          setActiveTab(filteredStructures[0].id);
+        }
+      } else {
+        // Admin tetap lihat semua struktur
+        setStructures(data);
+        
+        if (data.length > 0 && !activeTab) {
+          setActiveTab(data[0].id);
+        }
       }
     } catch (error) {
       console.error('Error fetching structures:', error);
@@ -216,7 +247,7 @@ export default function KelembagaanPage() {
   // Edit member
   const handleEditMember = async (
     memberId: string,
-    values: { name: string; position: string; role: string },
+    values: { name: string; position: string; role: string; manual_level?: number | null; order?: number },
     photoFile?: File
   ) => {
     try {
@@ -248,6 +279,8 @@ export default function KelembagaanPage() {
           name: values.name,
           position: values.position,
           role: values.role,
+          manual_level: values.manual_level !== undefined ? values.manual_level : undefined,
+          order: values.order,
           ...(photoUrl ? { photo_url: photoUrl } : {}),
         }),
       });
@@ -298,7 +331,19 @@ export default function KelembagaanPage() {
     }
   };
 
-  const currentMember = members.find(m => m.id === parentMemberId);
+  // Helper function to find member in tree structure
+  const findMemberInTree = (nodes: OrgTreeNode[], memberId: string): OrgTreeNode | undefined => {
+    for (const node of nodes) {
+      if (node.id === memberId) return node;
+      if (node.children && node.children.length > 0) {
+        const found = findMemberInTree(node.children, memberId);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
+
+  const currentMember = parentMemberId ? findMemberInTree(members, parentMemberId) : undefined;
 
   return (
     <div className="h-[calc(100vh-2.5rem)] overflow-hidden flex flex-col">
@@ -330,31 +375,35 @@ export default function KelembagaanPage() {
 
       {/* Content */}
       <div className="flex-1 min-h-0 mx-auto w-full">
-        {loading ? (
+        {structures.length === 0 && !loading ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <div className="text-center">
+              <p className="text-gray-900 dark:text-white text-lg">
+                {isAdmin 
+                  ? 'Belum ada struktur organisasi. Klik tombol + untuk menambahkan.'
+                  : 'Struktur organisasi belum tersedia.'}
+              </p>
+            </div>
+          </div>
+        ) : loading ? (
           <div className="flex min-h-[400px] items-center justify-center">
             <LoadingSpinner size="xl" text="Memuat data..." />
           </div>
+        ) : members.length === 0 ? (
+          <div className="flex min-h-[400px] items-center justify-center">
+            <div className="text-center">
+              <p className="text-gray-900 dark:text-white text-lg">
+                {isAdmin 
+                  ? 'Belum ada anggota di struktur ini. Mulai tambahkan anggota untuk membangun organisasi.'
+                  : 'Data anggota belum tersedia.'}
+              </p>
+            </div>
+          </div>
         ) : (
-          <OrgChartD3
+          <CustomOrgChartViewer
             members={members}
+            structureId={activeTab}
             isAdmin={isAdmin}
-            onAddMember={
-              isAdmin
-                ? (parentId) => {
-                    setParentMemberId(parentId);
-                    setShowAddMember(true);
-                  }
-                : undefined
-            }
-            onEditMember={
-              isAdmin
-                ? (member) => {
-                    setEditingMember(member as OrgTreeNode);
-                    setShowEditMember(true);
-                  }
-                : undefined
-            }
-            onDeleteMember={isAdmin ? handleDeleteMember : undefined}
           />
         )}
       </div>

@@ -8,6 +8,7 @@ import Card from '@/components/ui/card';
 const navItems = [
   { name: 'Profil', href: '/profil' },
   { name: 'Kelembagaan', href: '/kelembagaan' },
+  { name: 'UMKM', href: '/umkm' },
   { name: 'Peta & Fasilitas', href: '/peta-fasilitas' },
 ];
 

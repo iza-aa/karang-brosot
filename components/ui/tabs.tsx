@@ -42,18 +42,18 @@ export default function Tabs({
   const baseTabClasses =
     variant === 'navbar'
       ? 'relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2'
-      : 'relative px-4 py-2.5 font-medium transition-all duration-200 flex items-center gap-2';
+      : 'relative px-5 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2';
   
   const variantClasses = {
     default: {
       tab: 'rounded-t-lg',
-      active: 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-md',
+      active: 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400',
       inactive: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800',
     },
     pills: {
       tab: 'rounded-full',
-      active: 'bg-blue-500 text-white shadow-lg',
-      inactive: 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800',
+      active: 'bg-blue-600 dark:bg-blue-500 text-white font-semibold',
+      inactive: 'text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium',
     },
     underline: {
       tab: 'border-b-2 border-transparent',
@@ -63,7 +63,7 @@ export default function Tabs({
     navbar: {
       tab: 'rounded-lg',
       active:
-        'bg-white/80 dark:bg-black/40 text-[var(--color-blue-uii)] dark:text-[var(--color-blue-dark-uii)] shadow-sm',
+        'bg-white/80 dark:bg-black/40 text-[var(--color-blue-uii)] dark:text-[var(--color-blue-dark-uii)]',
       inactive: 'text-zinc-700 dark:text-zinc-300 hover:bg-white/40 dark:hover:bg-black/20',
     },
   };
@@ -149,7 +149,6 @@ export default function Tabs({
                   bg-red-500 text-white
                   hover:bg-red-600 hover:scale-110
                   cursor-pointer
-                  shadow-md
                 `}
                 title="Hapus tab"
               >
@@ -161,7 +160,7 @@ export default function Tabs({
             {isActive && variant === 'pills' && (
               <motion.div
                 layoutId="activeTab"
-                className="absolute inset-0 bg-blue-500 rounded-full -z-10"
+                className="absolute inset-0 bg-blue-600 dark:bg-blue-500 rounded-full -z-10"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
               />
             )}

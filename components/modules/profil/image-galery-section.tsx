@@ -96,7 +96,7 @@ export default function ImageGalerySection({ photos, loading, onRefetch }: Image
             <div className="text-center text-gray-500 py-8">
               Loading...
             </div>
-          ) : photos.length === 0 ? (
+          ) : !photos || photos.length === 0 ? (
             <div className="text-center text-gray-500 py-8">
               Belum ada foto
             </div>

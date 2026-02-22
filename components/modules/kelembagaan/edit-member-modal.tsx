@@ -79,7 +79,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave }: Edi
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Nama</label>
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               {...register('name', { required: 'Nama wajib diisi' })}
             />
             {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>}
@@ -89,7 +89,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave }: Edi
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Jabatan</label>
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               {...register('position', { required: 'Jabatan wajib diisi' })}
             />
             {errors.position && <p className="text-sm text-red-600 mt-1">{errors.position.message}</p>}
@@ -100,7 +100,7 @@ export default function EditMemberModal({ isOpen, onClose, member, onSave }: Edi
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Peran</label>
           <input
             type="text"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             placeholder="Mis: Ketua, Sekretaris, Anggota"
             {...register('role', { required: 'Peran wajib diisi' })}
           />

@@ -37,7 +37,6 @@ export default function AddMemberModal({
       name: '',
       position: '',
       role: '',
-      level: 0,
       photo: null,
     }),
     [parentId, structureId]
@@ -62,13 +61,13 @@ export default function AddMemberModal({
           name: values.name,
           position: values.position,
           role: values.role,
-          level: 0,
           photo: null,
-        },
+        } as any,
         photoFile
       );
       reset(defaultValues as AddOrgMemberForm);
       setPhotoFile(undefined);
+      setCompressionInfo('');
       onClose();
     } finally {
       setSaving(false);
@@ -91,7 +90,7 @@ export default function AddMemberModal({
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Nama</label>
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               {...register('name', { required: 'Nama wajib diisi' })}
             />
             {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>}
@@ -101,7 +100,7 @@ export default function AddMemberModal({
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Jabatan</label>
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               {...register('position', { required: 'Jabatan wajib diisi' })}
             />
             {errors.position && <p className="text-sm text-red-600 mt-1">{errors.position.message}</p>}
@@ -112,7 +111,7 @@ export default function AddMemberModal({
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Peran</label>
           <input
             type="text"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             placeholder="Mis: Ketua, Sekretaris, Anggota"
             {...register('role', { required: 'Peran wajib diisi' })}
           />
@@ -120,7 +119,7 @@ export default function AddMemberModal({
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Foto (opsional)</label>
+          <label className="block text-sm font-semibold text-blue-500 mb-2">Foto (opsional)</label>
           <input
             type="file"
             accept="image/*"
